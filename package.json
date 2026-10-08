@@ -1,7 +1,7 @@
 {
   "name": "@majikah/majik-bip-39",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Derive deterministic BIP-39 mnemonics from PNG images, with optional Argon2id passphrase mode.",
   "license": "Apache-2.0",
   "author": "Zelijah",
