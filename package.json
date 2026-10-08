@@ -1,0 +1,64 @@
+{
+  "name": "@majikah/majik-bip-39",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Derive deterministic BIP-39 mnemonics from PNG images, with optional Argon2id passphrase mode.",
+  "license": "Apache-2.0",
+  "author": "Zelijah",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Majikah/majik-bip-39.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/jedlsf"
+  },
+  "keywords": [
+    "bip39",
+    "bip-39",
+    "mnemonic",
+    "seed-phrase",
+    "recovery-phrase",
+    "image-to-mnemonic",
+    "png",
+    "image",
+    "deterministic",
+    "entropy",
+    "argon2id",
+    "cryptography",
+    "wallet"
+  ],
+  "homepage": "https://github.com/Majikah/majik-bip-39#readme",
+  "bugs": {
+    "url": "https://github.com/Majikah/majik-bip-39/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "@scure/bip39": "2.4.0",
+    "fast-png": "8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2",
+    "vitest": "5.0.3"
+  },
+  "files": [
+    "dist",
+    "docs"
+  ]
+}
