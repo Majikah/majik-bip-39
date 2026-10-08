@@ -16,6 +16,66 @@ The library does **not redefine BIP-39**. It only provides a deterministic way t
 
 ---
 
+## Table of Contents
+
+- [Majik BIP-39](#majik-bip-39)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+    - [Derive from bytes](#derive-from-bytes)
+    - [Derive from a browser `File`](#derive-from-a-browser-file)
+  - [How It Works](#how-it-works)
+    - [Passphrase mode](#passphrase-mode)
+  - [Determinism](#determinism)
+    - [Language does not change the entropy](#language-does-not-change-the-entropy)
+- [Image Derivation](#image-derivation)
+  - [PNG Canonicalization](#png-canonicalization)
+    - [Supported image data](#supported-image-data)
+    - [Currently rejected](#currently-rejected)
+- [Resource Limits](#resource-limits)
+- [Passphrase Mode](#passphrase-mode-1)
+    - [Important](#important)
+- [BIP-39 Helpers](#bip-39-helpers)
+  - [Entropy → mnemonic](#entropy--mnemonic)
+  - [Mnemonic → entropy](#mnemonic--entropy)
+  - [Validate a mnemonic](#validate-a-mnemonic)
+- [Supported BIP-39 Languages](#supported-bip-39-languages)
+- [API](#api)
+  - [`MajikBip39.fromBytes()`](#majikbip39frombytes)
+  - [`MajikBip39.fromFile()`](#majikbip39fromfile)
+  - [`MajikBip39.derive()`](#majikbip39derive)
+  - [`MajikBip39.deriveMnemonic()`](#majikbip39derivemnemonic)
+  - [`MajikBip39.deriveEntropy()`](#majikbip39deriveentropy)
+  - [`MajikBip39.toMnemonic()`](#majikbip39tomnemonic)
+  - [`MajikBip39.toEntropy()`](#majikbip39toentropy)
+  - [`MajikBip39.validateMnemonic()`](#majikbip39validatemnemonic)
+  - [`MajikBip39.listHandlers()`](#majikbip39listhandlers)
+  - [`MajikBip39.listSchemes()`](#majikbip39listschemes)
+- [Scheme Resolution](#scheme-resolution)
+- [Errors](#errors)
+- [Versioned Derivation](#versioned-derivation)
+- [Reproducibility](#reproducibility)
+- [Security Considerations](#security-considerations)
+  - [This is deterministic derivation, not random generation](#this-is-deterministic-derivation-not-random-generation)
+  - [Do not expose the mnemonic](#do-not-expose-the-mnemonic)
+  - [Passphrase security](#passphrase-security)
+  - [Input entropy is not automatically wallet entropy](#input-entropy-is-not-automatically-wallet-entropy)
+- [Privacy](#privacy)
+- [Design Philosophy](#design-philosophy)
+- [Current Status](#current-status)
+    - [Implemented](#implemented)
+    - [Planned](#planned)
+- [Example: Complete Deterministic Flow](#example-complete-deterministic-flow)
+- [Compatibility with BIP-39](#compatibility-with-bip-39)
+- [Important Limitations](#important-limitations)
+  - [License](#license)
+  - [Author](#author)
+  - [Contact](#contact)
+
+
+---
+
 ## Features
 
 * Deterministic input → BIP-39 derivation
@@ -89,30 +149,22 @@ const mnemonic = await MajikBip39.fromFile(file, {
 
 Majik BIP-39 uses a two-stage model:
 
-```text
-Input
-  │
-  ▼
-Handler
-  │
-  ├─ detect / validate input
-  ├─ canonicalize content
-  └─ produce canonical chunks
-          │
-          ▼
-   versioned domain
-          │
-          ▼
-      SHA-256
-          │
-          ▼
-   256-bit entropy
-          │
-          ▼
-      BIP-39
-          │
-          ▼
-  24-word mnemonic
+```mermaid
+flowchart TD
+    A[Input] --> B[Handler]
+
+    B --> C[Detect / validate input]
+    B --> D[Canonicalize content]
+    B --> E[Produce canonical chunks]
+
+    C --> F[Versioned domain]
+    D --> F
+    E --> F
+
+    F --> G[SHA-256]
+    G --> H[256-bit entropy]
+    H --> I[BIP-39]
+    I --> J[24-word mnemonic]
 ```
 
 For an input without a passphrase, the core derivation is conceptually:
